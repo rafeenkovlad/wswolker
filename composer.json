@@ -2,7 +2,7 @@
     "name": "rafee/workerman",
     "autoload": {
         "psr-4": {
-            "Rafee\\Workerman\\": "src/"
+            "App\\Workerman\\": "src/"
         }
     },
     "authors": [
@@ -11,6 +11,7 @@
         }
     ],
     "require": {
-        "workerman/workerman": "^4.1"
+        "workerman/workerman": "^4.1",
+        "symfony/dotenv": "^5.4"
     }
 }
