@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Workerman\wolker;
+namespace App\Workerman\Walker;
 
 
 use App\Workerman\Tgauth\Order;

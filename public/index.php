@@ -1,6 +1,6 @@
 <?php
 
-use App\Workerman\Wolker\Walker;
+use App\Workerman\Walker\Walker;
 
 require_once './vendor/autoload.php';
 

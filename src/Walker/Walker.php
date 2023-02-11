@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Workerman\Wolker;
+namespace App\Workerman\Walker;
 
 use App\Workerman\Config\ENV;
 use App\Workerman\Geo\Geo;
