@@ -9,6 +9,7 @@ class Order implements OrderInterface
 
     public ?int $id;
     public ?string $name;
+    public ?string $type;
     public ?Location $location;
 
     public function __invoke(object $order): OrderInterface

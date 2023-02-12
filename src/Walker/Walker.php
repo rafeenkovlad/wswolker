@@ -7,7 +7,9 @@ use App\Workerman\Geo\Geo;
 use App\Workerman\Tgauth\Location;
 use App\Workerman\Tgauth\Notification\Notification;
 use App\Workerman\Tgauth\Notification\Type;
+use App\Workerman\Tgauth\Notification\Types\OrderNotifiType;
 use App\Workerman\Tgauth\Order;
+use App\Workerman\Tgauth\Tgauth;
 use App\Workerman\Tgauth\User;
 use Symfony\Component\Dotenv\Dotenv;
 use Workerman\Connection\TcpConnection;
@@ -24,11 +26,28 @@ class Walker
 
         // Emitted when new connection come
         $ws_worker->onConnect = function (TcpConnection $connection)use(&$ws_worker){
-            $connection->onWebSocketConnect = function($connection , $http_header)use(&$ws_worker)
+            $connection->onWebSocketConnect = function(TcpConnection $connection , $http_header)use(&$ws_worker)
             {
-                if(($_GET['id']??'') !== '') {
-                    new User($connection, $_GET['orders']??"",$_GET['id']??0);
+                try{
+                    if(!isset($_GET['token'])) {
+                        $connection->onClose = function (TcpConnection $connection) {
+                            $connection->send('token not found');
+                            echo "Connection closed - token not found\n";
+                        };
+                    }
+                    $payload = Tgauth::init()->request($_GET['token']);
+                    Fns::payload($payload);
+                    Fns::token($_GET['token']);
+
+                }catch (\Throwable $ex) {
+                    $connection->onClose = function (TcpConnection $connection) {
+                        $connection->send('bad credentials');
+                        echo "Connection closed - bad credentials\n";
+                    };
                 }
+
+                new User($connection, Fns::payload()->orders??null ,Fns::payload()->data->ownerId??null);
+
             };
             echo "New connection\n";
         };
@@ -38,14 +57,17 @@ class Walker
                 if(!$user instanceof User) {
                     continue;
                 }
-
-                $data = json_decode($data);
+                if(is_string($data)) {
+                    $data = json_decode($data);
+                }
                 switch ($data->text??'/default') {
                     case '/location' && ($orders = Fns::intersectionOrders($user->orders, $data->orders??[]))!== []:
-                        Geo::init()->request($data->token);
+                        Geo::init()->request(Fns::token());
                         $notifi = new Notification(Type::ORDER);
                         foreach ($orders as $order) {
-                            $notifi->add($order);
+                            if($order->type === OrderNotifiType::MOVE) {
+                                $notifi->add($order);
+                            }
                         }
                         $point = (new Location());
                         $point = $point($data->location);
@@ -55,7 +77,10 @@ class Walker
 
                 }
 
-
+//                foreach ($data as $key=>$val) {
+//                    unset($data->{$key});
+//                }
+                $data = 0;
 
                 //$connect->send($data->ordersWithRoute);
             }

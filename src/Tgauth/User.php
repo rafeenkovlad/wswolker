@@ -14,14 +14,18 @@ class User
     public int $id;
     private static array $users = [];
 
-    public function __construct(TcpConnection $connection, string $orders, $id)
+    public function __construct(TcpConnection $connection, ?array $orders, ?int $id)
     {
+        if($id === null) {
+            return;
+        }
+
         $this->connection = $connection;
-        $orders = json_decode($orders);
-        foreach ($orders as $id) {
-            $order = new Order;
-            $order->id = $id;
-            $this->orders[] = $order;
+        foreach ($orders??[] as $order) {
+            $newOrder = new Order;
+            $newOrder->id = $order->id;
+            $newOrder->type = $order->type;
+            $this->orders[] = $newOrder;
         }
         $this->id = $id;
         self::$users[] = $this;

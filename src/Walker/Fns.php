@@ -8,6 +8,10 @@ use App\Workerman\Tgauth\Order;
 
 class Fns {
 
+    private static object $payload;
+
+    private static string $token;
+
     public static function intersectionOrders(array $ordersUser, array $ordersGad)
     {
         $orders = [];
@@ -27,4 +31,23 @@ class Fns {
         return $orders;
 
     }
+
+    public static function payload(string $payload = null)
+    {
+        if(isset(self::$payload)) {
+            return self::$payload;
+        }
+        self::$payload = (json_decode($payload))->result;
+        return self::$payload;
+    }
+
+    public static function token(string $token = '')
+    {
+        if(isset(self::$token)) {
+            return self::$token;
+        }
+        self::$token = $token;
+        return self::$token;
+    }
+
 }
