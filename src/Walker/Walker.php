@@ -80,7 +80,7 @@ class Walker
 //                foreach ($data as $key=>$val) {
 //                    unset($data->{$key});
 //                }
-                $data = 0;
+                //$data = 0;
 
                 //$connect->send($data->ordersWithRoute);
             }
