@@ -8,13 +8,18 @@ use GuzzleHttp\Client;
 
 class Tgauth implements TgauthInterface
 {
+    private static Tgauth $tg;
     private static Client $guzzle;
     public static function init():TgauthInterface
     {
+        if(isset(self::$tg)){
+            return self::$tg ;
+        }
         $tg = new Tgauth();
         $guzzle = new Client();
         $tg::$guzzle = $guzzle;
-        return $tg;
+        self::$tg = $tg;
+        return self::$tg;
     }
 
     public function request(string $token)

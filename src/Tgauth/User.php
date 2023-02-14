@@ -12,9 +12,10 @@ class User
     public TcpConnection $connection;
     public array $orders = [];
     public int $id;
+    private string $token;
     private static array $users = [];
 
-    public function __construct(TcpConnection $connection, ?array $orders, ?int $id)
+    public function __construct(TcpConnection $connection, ?array $orders, ?int $id, string $token)
     {
         if($id === null) {
             return;
@@ -28,11 +29,27 @@ class User
             $this->orders[] = $newOrder;
         }
         $this->id = $id;
-        self::$users[] = $this;
+        $this->token = $token;
+        self::$users[$this->connection->id] = $this;
     }
 
     public static function getUsers()
     {
         return self::$users;
+    }
+
+    public static function getUser(TcpConnection $connection):User
+    {
+        return self::$users[$connection->id];
+    }
+
+    public function getToken()
+    {
+        return $this->token;
+    }
+
+    public static function remove(TcpConnection $connection):void
+    {
+        unset(self::$users[$connection->id]);
     }
 }

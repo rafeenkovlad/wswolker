@@ -29,25 +29,29 @@ class Walker
             $connection->onWebSocketConnect = function(TcpConnection $connection , $http_header)use(&$ws_worker)
             {
                 try{
+                    Fns::freez();
                     if(!isset($_GET['token'])) {
                         $connection->onClose = function (TcpConnection $connection) {
                             $connection->send('token not found');
                             echo "Connection closed - token not found\n";
                         };
                     }
-                    $payload = Tgauth::init()->request($_GET['token']);
-                    Fns::payload($payload);
                     Fns::token($_GET['token']);
+                    $payload = Tgauth::init()->request(Fns::token());
+                    Fns::payload($payload);
+
 
                 }catch (\Throwable $ex) {
+                    echo $ex->getMessage();
                     $connection->onClose = function (TcpConnection $connection) {
                         $connection->send('bad credentials');
                         echo "Connection closed - bad credentials\n";
                     };
                 }
 
-                new User($connection, Fns::payload()->orders??null ,Fns::payload()->data->ownerId??null);
-
+                $user = new User($connection, Fns::payload()->orders??null ,Fns::payload()->data->ownerId??null, Fns::token());
+                Fns::user($user);
+                Fns::rm();
             };
             echo "New connection\n";
         };
@@ -62,7 +66,7 @@ class Walker
                 }
                 switch ($data->text??'/default') {
                     case '/location' && ($orders = Fns::intersectionOrders($user->orders, $data->orders??[]))!== []:
-                        Geo::init()->request(Fns::token());
+                        Geo::init()->request(User::getUser($connection)->getToken());
                         $notifi = new Notification(Type::ORDER);
                         foreach ($orders as $order) {
                             if($order->type === OrderNotifiType::MOVE) {
@@ -80,7 +84,6 @@ class Walker
 //                foreach ($data as $key=>$val) {
 //                    unset($data->{$key});
 //                }
-                //$data = 0;
 
                 //$connect->send($data->ordersWithRoute);
             }
@@ -89,6 +92,7 @@ class Walker
         };
 // Emitted when connection closed
         $ws_worker->onClose = function (TcpConnection $connection) {
+            User::remove($connection);
             echo "Connection closed\n";
         };
 

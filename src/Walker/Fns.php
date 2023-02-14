@@ -5,12 +5,15 @@ namespace App\Workerman\Walker;
 
 
 use App\Workerman\Tgauth\Order;
+use App\Workerman\Tgauth\User;
 
 class Fns {
 
-    private static object $payload;
+    private static ?object $payload;
 
-    private static string $token;
+    private static ?string $token;
+
+    private static ?User $user;
 
     public static function intersectionOrders(array $ordersUser, array $ordersGad)
     {
@@ -37,17 +40,41 @@ class Fns {
         if(isset(self::$payload)) {
             return self::$payload;
         }
-        self::$payload = (json_decode($payload))->result;
+        self::$payload = (json_decode($payload??''))->result??null;
         return self::$payload;
     }
 
-    public static function token(string $token = '')
+    public static function token(string $token = null)
     {
         if(isset(self::$token)) {
             return self::$token;
         }
         self::$token = $token;
         return self::$token;
+    }
+
+    public static function user(User $user = null):?User
+    {
+        if(isset(self::$user)) {
+            return self::$user;
+        }
+        self::$user = $user;
+        return self::$user;
+    }
+
+    public static function rm()
+    {
+        self::$payload = null;
+        self::$token = null;
+        self::$user = null;
+    }
+
+    public static function freez():void
+    {
+        do{
+            echo ".";
+            usleep(2000);
+        }while(isset(self::$user));
     }
 
 }
