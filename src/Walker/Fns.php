@@ -5,6 +5,7 @@ namespace App\Workerman\Walker;
 
 
 use App\Workerman\Tgauth\Order;
+use App\Workerman\Tgauth\Service;
 use App\Workerman\Tgauth\User;
 
 class Fns {
@@ -22,10 +23,11 @@ class Fns {
             static function(Order $order)use(&$orders, $ordersGad):void {
                 foreach($ordersGad as $orderGad) {
                     if(isset($orderGad->id) && $orderGad->id === $order->id) {
-                        $order->name = $orderGad->name;
+                        $service = new Service();
+                        $order->service = $service($orderGad->service);
                     }
                 }
-                if(isset($order->name ) && $order->name !== null) {
+                if(isset($order->service ) && $order->service !== null) {
                     $orders[] = $order;
                 }
             }

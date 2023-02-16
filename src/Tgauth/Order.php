@@ -8,14 +8,14 @@ class Order implements OrderInterface
 {
 
     public ?int $id;
-    public ?string $name;
+    public ?Service $service;
     public ?string $type;
     public ?Location $location;
 
     public function __invoke(object $order): OrderInterface
     {
         $this->id = $order->id;
-        $this->name = $order->name;
+        $this->service = $order->service;
         return $this;
     }
 

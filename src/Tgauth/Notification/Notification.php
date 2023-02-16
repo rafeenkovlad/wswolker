@@ -29,12 +29,13 @@ class Notification implements NotificationInterface
 
     private function order(object $object):void
     {
-        if($object instanceof Location) {
+        if($object instanceof Location && !empty($this->orders)) {
             foreach($this->orders as &$order) {
                 if($order instanceof Order) {
                     $order->location = $object;
                 }
             }
+            return;
         }
 
         if($object instanceof Order) {
