@@ -4,6 +4,8 @@
 namespace App\Workerman\Geo;
 
 
+use App\Workerman\Tgauth\Location;
+use App\Workerman\Tgauth\User;
 use GuzzleHttp\Client;
 
 class Geo implements GeoInterface
@@ -17,7 +19,7 @@ class Geo implements GeoInterface
         return $geo;
     }
 
-    public function request(string $token)
+    public function request(string $token, Location $location, User $user)
     {
         echo self::$guzzle->request(
             'POST',
@@ -34,10 +36,10 @@ class Geo implements GeoInterface
                     "method" => "point",
                     'params' =>
                         [
-                            "sn" => "RoutingTest2",
-                            "point" => [55.11986383513666,36.64484536136677],
-                            "speed" => 100,
-                            "date" => "2022-07-26T10:19:23.000+00:00"
+                            "sn" => "$user->id",
+                            "point" => [$location->lat,$location->long],
+                            "speed" => 0,
+                            "date" => (new \DateTime('now'))->format('Y-m-dTH:i:s')
                         ]
                 ],
                 'success' => function ($response) {
