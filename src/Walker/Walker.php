@@ -63,9 +63,11 @@ class Walker
                 }
                 if(is_string($data)) {
                     $data = json_decode($data);
+                    //девайс
+                    $device = $data->from->id;
                 }
                 switch ($data->text??'/default') {
-                    case '/location' && ($orders = Fns::intersectionOrders($user->orders, $data->orders??[]))!== []:
+                    case '/location' && ($orders = Fns::intersectionOrders($user->orders, $data->orders??[]))!== [] && isset($device):
                         $notifi = new Notification(Type::ORDER);
                         foreach ($orders as $order) {
                             $notifi->add($order);
@@ -74,7 +76,7 @@ class Walker
                         $point = $point($data->location);
                         $notifi->add($point);
                         $user->connection->send($notifi->toJson());
-                        Geo::init()->request(User::getUser($connection)->getToken(), $point, $user);
+                        Geo::init()->request(User::getUser($connection)->getToken(), $point, $device);
                         $orders = [];
                         break;
 

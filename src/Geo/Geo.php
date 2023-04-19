@@ -19,9 +19,14 @@ class Geo implements GeoInterface
         return $geo;
     }
 
-    public function request(string $token, Location $location, User $user)
+    /**
+     * @param string $token
+     * @param Location $location
+     * @param string $sn //телеграм ид
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function request(string $token, Location $location, string $sn)
     {
-        var_dump($user->id);
         echo self::$guzzle->request(
             'POST',
                 $_ENV['GEO'],
@@ -37,7 +42,7 @@ class Geo implements GeoInterface
                     "method" => "point",
                     'params' =>
                         [
-                            "sn" => "$user->id",
+                            "sn" => $sn,
                             "point" => [$location->lat,$location->long],
                             "speed" => 0,
                             "date" => (new \DateTime('now'))->format('Y-m-dTH:i:s')
@@ -50,6 +55,5 @@ class Geo implements GeoInterface
                     echo $exception;
                 }
             ])->getBody()->getContents()."\r\n";
-        $user = null;
     }
 }
