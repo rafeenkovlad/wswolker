@@ -21,6 +21,7 @@ class Geo implements GeoInterface
 
     public function request(string $token, Location $location, User $user)
     {
+        var_dump($user->id);
         echo self::$guzzle->request(
             'POST',
                 $_ENV['GEO'],
@@ -49,5 +50,6 @@ class Geo implements GeoInterface
                     echo $exception;
                 }
             ])->getBody()->getContents()."\r\n";
+        $user = null;
     }
 }
