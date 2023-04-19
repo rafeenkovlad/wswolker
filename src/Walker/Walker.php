@@ -68,15 +68,14 @@ class Walker
                     case '/location' && ($orders = Fns::intersectionOrders($user->orders, $data->orders??[]))!== []:
                         $notifi = new Notification(Type::ORDER);
                         foreach ($orders as $order) {
-                            if($order->type === OrderNotifiType::MOVE) {
-                                $notifi->add($order);
-                            }
+                            $notifi->add($order);
                         }
                         $point = (new Location());
                         $point = $point($data->location);
                         $notifi->add($point);
                         $user->connection->send($notifi->toJson());
                         Geo::init()->request(User::getUser($connection)->getToken(), $point, $user);
+                        $orders = [];
                         break;
 
                 }

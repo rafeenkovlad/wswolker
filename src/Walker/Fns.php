@@ -4,6 +4,7 @@
 namespace App\Workerman\Walker;
 
 
+use App\Workerman\Tgauth\Notification\Types\OrderNotifiType;
 use App\Workerman\Tgauth\Order;
 use App\Workerman\Tgauth\Service;
 use App\Workerman\Tgauth\User;
@@ -16,13 +17,13 @@ class Fns {
 
     private static ?User $user;
 
-    public static function intersectionOrders(array $ordersUser, array $ordersGad)
+    public static function intersectionOrders(array $ordersUser, array $ordersGad):array
     {
         $orders = [];
         array_map(
             static function(Order $order)use(&$orders, $ordersGad):void {
                 foreach($ordersGad as $orderGad) {
-                    if(isset($orderGad->id) && $orderGad->id === $order->id) {
+                    if(isset($orderGad->id) && $orderGad->id === $order->id && $order->type === OrderNotifiType::MOVE) {
                         $service = new Service();
                         $order->service = $service($orderGad->service);
                     }
