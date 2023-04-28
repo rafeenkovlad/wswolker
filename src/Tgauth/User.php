@@ -4,6 +4,7 @@
 namespace App\Workerman\Tgauth;
 
 
+use App\Workerman\Tgauth\Users\Users;
 use Workerman\Connection\TcpConnection;
 use Workerman\Worker;
 
@@ -30,17 +31,20 @@ class User
         }
         $this->id = $id;
         $this->token = $token;
-        self::$users[$this->connection->id] = $this;
+        Users::init()->add($this, $this->connection->id);
+        //self::$users[$this->connection->id] = $this;
     }
 
-    public static function getUsers()
+    public static function getUsers():array
     {
-        return self::$users;
+        return Users::get()->getUsers();
+        //return self::$users;
     }
 
     public static function getUser(TcpConnection $connection):User
     {
-        return self::$users[$connection->id];
+        return Users::get()->current($connection->id);
+       // return self::$users[$connection->id];
     }
 
     public function getToken()
@@ -50,6 +54,7 @@ class User
 
     public static function remove(TcpConnection $connection):void
     {
-        unset(self::$users[$connection->id]);
+        Users::get()->remove($connection->id);
+        //unset(self::$users[$connection->id]);
     }
 }

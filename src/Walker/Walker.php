@@ -11,6 +11,7 @@ use App\Workerman\Tgauth\Notification\Types\OrderNotifiType;
 use App\Workerman\Tgauth\Order;
 use App\Workerman\Tgauth\Tgauth;
 use App\Workerman\Tgauth\User;
+use App\Workerman\Tgauth\Users\Users;
 use Symfony\Component\Dotenv\Dotenv;
 use Workerman\Connection\TcpConnection;
 use Workerman\Worker;
@@ -57,7 +58,8 @@ class Walker
         };
 // Emitted when data received
         $ws_worker->onMessage = function (TcpConnection $connection, $data) {
-            foreach (User::getUsers() as $user) {
+            yield Users::getUsers();
+            foreach (yield as $user) {
                 if(!$user instanceof User) {
                     continue;
                 }
