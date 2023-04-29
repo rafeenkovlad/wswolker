@@ -21,9 +21,9 @@ class Users
         return self::$class;
     }
 
-    public static function getUsers():\Generator
+    public static function getUsers():array
     {
-        yield self::$class->values;
+        return self::$class->values;
     }
 
     public function add(User $user, $connectionId):void
@@ -41,23 +41,8 @@ class Users
         unset(self::$class->values[$connectionId]);
     }
 
-    public function next()
+    public function valid($connectionId):bool
     {
-        ++$this->position;
-    }
-
-    public function key():int
-    {
-        return $this->position;
-    }
-
-    public function valid():bool
-    {
-        return isset($this->values[$this->position]);
-    }
-
-    public function rewind()
-    {
-        $this->position = 0;
+        return isset($this->values[$connectionId]);
     }
 }
