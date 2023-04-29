@@ -21,9 +21,9 @@ class Users
         return self::$class;
     }
 
-    public static function getUsers():array
+    public static function getUsers():\Generator
     {
-        return self::$class->values;
+        yield self::$class->values;
     }
 
     public function add(User $user, $connectionId):void

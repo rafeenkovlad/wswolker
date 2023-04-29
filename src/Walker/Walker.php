@@ -58,8 +58,7 @@ class Walker
         };
 // Emitted when data received
         $ws_worker->onMessage = function (TcpConnection $connection, $data) {
-            yield Users::getUsers();
-            foreach (yield as $user) {
+            foreach (Users::getUsers() as $user) {
                 if(!$user instanceof User) {
                     continue;
                 }
