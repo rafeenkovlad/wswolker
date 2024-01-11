@@ -19,6 +19,7 @@ RUN apt-get update && \
     mkdir /var/log/m4 && \
     touch /var/log/m4/auth_dev.log && \
     chmod -R 777 /var/log/m4 && \
-    chmod 777 /var/log/m4/auth_dev.log
+    chmod 777 /var/log/m4/auth_dev.log && \
+    docker-php-ext-configure pcntl --enable-pcntl && docker-php-ext-install pcntl
 
 EXPOSE 80

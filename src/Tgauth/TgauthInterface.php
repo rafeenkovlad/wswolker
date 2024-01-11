@@ -6,5 +6,5 @@ namespace App\Workerman\Tgauth;
 
 interface TgauthInterface
 {
-    public static function init():TgauthInterface;
+    public static function init(): TgauthInterface;
 }

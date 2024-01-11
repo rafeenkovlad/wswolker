@@ -10,7 +10,7 @@ class Tgauth implements TgauthInterface
 {
     private static Tgauth $tg;
     private static Client $guzzle;
-    public static function init():TgauthInterface
+    public static function init(): TgauthInterface
     {
         if(isset(self::$tg)){
             return self::$tg ;
@@ -37,7 +37,8 @@ class Tgauth implements TgauthInterface
                         "id" => "req_id",
                         "jsonrpc" => "2.0",
                         "method" => "verifyToken"
-                    ]
+                    ],
+                    'timeout' => 10,
                 ])->getBody()->getContents()."\r\n";
     }
 }

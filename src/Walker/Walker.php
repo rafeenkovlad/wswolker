@@ -37,11 +37,10 @@ class Walker
                             echo "Connection closed - token not found\n";
                         };
                     }
+
                     Fns::token($_GET['token']);
                     $payload = Tgauth::init()->request(Fns::token());
                     Fns::payload($payload);
-
-
                 }catch (\Throwable $ex) {
                     echo $ex->getMessage();
                     $connection->onClose = function (TcpConnection $connection) {
@@ -56,7 +55,8 @@ class Walker
             };
             echo "New connection\n";
         };
-// Emitted when data received
+
+        // Emitted when data received
         $ws_worker->onMessage = function (TcpConnection $connection, $data) {
             foreach (Users::getUsers() as $user) {
                 if(!$user instanceof User) {

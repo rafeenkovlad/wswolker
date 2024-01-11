@@ -29,5 +29,6 @@ services:
       - '2346:2346'
     networks:
       - tg-auth
+    command: php public/index.php start
 
 
