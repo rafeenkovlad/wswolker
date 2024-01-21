@@ -22,7 +22,8 @@ services:
     depends_on:
       - wswalker
     networks:
-      - tg-auth
+      tg-auth:
+        ipv4_address: 192.168.0.43
   wswalker:
     container_name: container_wswalker
     build:
@@ -32,7 +33,8 @@ services:
     ports:
       - '2346:2346'
     networks:
-      - tg-auth
+      tg-auth:
+        ipv4_address: 192.168.0.102
     command: php public/index.php start
 
 
